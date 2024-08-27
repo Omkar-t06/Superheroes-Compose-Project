@@ -2,6 +2,12 @@ package com.omkar.superheroes
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,16 +44,29 @@ fun SuperHeroesList(
     heroesList: List<Hero>,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    LazyColumn(contentPadding = contentPadding) {
-        items(heroesList) {
-            hero  ->  HeroCard(
-                heroDetails = hero,
-                modifier = modifier
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.padding_medium),
-                        vertical = dimensionResource(id = R.dimen.padding_small)
-                    )
-            )
+    val visibleState = remember {
+        MutableTransitionState(false).apply { targetState = true }
+    }
+
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(
+            animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy)
+        ),
+        exit = fadeOut(),
+        modifier = modifier
+    ) {
+        LazyColumn(contentPadding = contentPadding) {
+            items(heroesList) { hero ->
+                HeroCard(
+                    heroDetails = hero,
+                    modifier = modifier
+                        .padding(
+                            horizontal = dimensionResource(id = R.dimen.padding_medium),
+                            vertical = dimensionResource(id = R.dimen.padding_small)
+                        )
+                )
+            }
         }
     }
 }
@@ -93,7 +113,7 @@ fun HeroIcon(
         modifier = modifier
             .size(72.dp)
             .clip(MaterialTheme.shapes.small)
-    ){
+    ) {
         Image(
             painter = painterResource(id = imageRes),
             contentDescription = null,
