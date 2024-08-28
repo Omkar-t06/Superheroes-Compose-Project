@@ -1,6 +1,5 @@
 package com.omkar.superheroes
 
-import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
